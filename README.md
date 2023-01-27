@@ -1,2 +1,3 @@
-# ML_Notes
- Machine Learning Notes
+# Machine Learning Notes
+
+This repo serves as a running educational document for machine learning and statistical concepts.
