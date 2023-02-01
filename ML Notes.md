@@ -70,17 +70,27 @@ The P-value is used to assess whether or not you reject the null hypothesis. Sta
 
 You must first figure out what potential predictors ($X_n$) you want to keep and what ones you want to throw away (think GIGO garbage in garbage out).
 
-Types of approaches:
+There are 5 methods of building models:
 
-1) All in: You keep everything
-2) Backwards elimination: 
-  a) Step 1: Select a significance level (SL) to stay in the model
-  b) Step 2: Fit the full model with all possible predictors
-  c) Step 3: Consider the predictor with the highest P-value. If P > SL, go to step 4. Otherwise model is ready!
-  d) Step 4: Remove the predictor
-  e) Step 5: Fit the model without this variable, return to step 3.
-3) Forwards selection:
-  a) Step 1: Select a significance level (SL) to stay in the model
-  b) Step 2: Fit all simple regression models $y$ ~ $x_n$. Select the one with the lower P-value
-  c) Step 3: Keep this variable and fit all possible models with one extra predictor added to the one(s) you already have.
-  d) Step 4: Consider the predictor with the lower P-value. If P < SL, go to Step 3 again, otherwise model is ready!
+- All in: You keep everything
+- Backwards elimination: 
+  - Step 1: Select a significance level (SL) to stay in the model
+  - Step 2: Fit the full model with all possible predictors
+  - Step 3: Consider the predictor with the highest P-value. If P > SL, go to step 4. Otherwise model is ready! Keep the current model.
+  - Step 4: Remove the predictor
+  - Step 5: Fit the model without this variable, return to step 3.
+- Forwards selection:
+  - Step 1: Select a significance level (SL) to stay in the model
+  - Step 2: Fit all simple regression models $y$ ~ $x_n$. Select the one with the lower P-value
+  - Step 3: Keep this variable and fit all possible models with one extra predictor added to the one(s) you already have.
+  - Step 4: Consider the predictor with the lower P-value. If P < SL, go to Step 3 again, otherwise model is ready! Keep the previous model.
+- Bidirectional elminiation:
+  - Step 1: Select the SL to enter and to stay in the model (SLENTER / SLSTAY)
+  - Step 2: Perform the next step of forward selection (new vars must have P < SLENTER)
+  - Step 3: Perform all steps of the backward elimination process (old variables must have P < SLSTAY). Then go back to step 2.
+  - Step 4: No new variables can enter, and no old variables can exist. Model is ready!
+- All Possible Models:
+  - Step 1: Select a criterion of foodness of fit
+  - Step 2: Construct all possible regression models: $2^N-1$ total combinations
+  - Step 3: Select the one with the best criterion. Your model is ready!
+  > This one is very computationally expensive
