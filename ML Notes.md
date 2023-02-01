@@ -5,6 +5,10 @@
 ## Dictionary
 
 - **Regression**: The process of relating (1)+ dependent variables to (1)+ independent variables. Regression models show if changes observed in DVs are associated with changes in IVs.
+- **Feature Scaling**:
+  - Two types:
+    - Normalization: $X' = \frac{(X - X_{min})}{(X_{max} - X_{min})}$
+    - Standardization: $X' = \frac{X - \mu}{\sigma}$
 
 ## Linear Regression
 
