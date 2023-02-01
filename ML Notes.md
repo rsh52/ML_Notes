@@ -61,3 +61,26 @@ We can represent this in our Multiple Linear Regression equation:
 $\widehat{y} = b_0 + b_1x_1 + b_2 x_2 ... + b_n x_n ... b_nD_n$
 
 Where $D_n$ are the dummy variables extrapolated from your categorical value column.
+
+#### P-Values
+
+The P-value is used to assess whether or not you reject the null hypothesis. Statistical significance is the threshold where a sufficinet level of confidence is met to reject the null hypothesis.
+
+#### Building a Model
+
+You must first figure out what potential predictors ($X_n$) you want to keep and what ones you want to throw away (think GIGO garbage in garbage out).
+
+Types of approaches:
+
+1) All in: You keep everything
+2) Backwards elimination: 
+  a) Step 1: Select a significance level (SL) to stay in the model
+  b) Step 2: Fit the full model with all possible predictors
+  c) Step 3: Consider the predictor with the highest P-value. If P > SL, go to step 4. Otherwise model is ready!
+  d) Step 4: Remove the predictor
+  e) Step 5: Fit the model without this variable, return to step 3.
+3) Forwards selection:
+  a) Step 1: Select a significance level (SL) to stay in the model
+  b) Step 2: Fit all simple regression models $y$ ~ $x_n$. Select the one with the lower P-value
+  c) Step 3: Keep this variable and fit all possible models with one extra predictor added to the one(s) you already have.
+  d) Step 4: Consider the predictor with the lower P-value. If P < SL, go to Step 3 again, otherwise model is ready!
