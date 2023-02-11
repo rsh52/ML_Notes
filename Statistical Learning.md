@@ -21,7 +21,7 @@ This running markdown document will serve to store notes related to the [EdX Sta
 - $ϵ$ = irreducible error
 - $IR$ = “real numbers”
 
-## Chapter 1 - Introduction
+# Chapter 1 - Introduction
 
 This is largely syllabus week style topics. Not much here in terms of notes.
 
@@ -31,7 +31,9 @@ All datasets used in this course are found in the `ISLR2` package.
 
 ![Ch 1 Datasets](/images/statistcal_learning/ch1-datasets.png)
 
-## Chapter 2 - Statistical Learning
+# Chapter 2 - Statistical Learning
+
+## Ch 2.1
 
 ### Introduction to Regression Models
 
@@ -60,7 +62,7 @@ Consider the equation:
 
 $\hat{Y} = \hat{f}(X)$
 
-When working with **prediction**, $\hat(f)$ is a "black box," i.e. the exact form of it is not our concern, but the accuracy of how it helps us predict $\hat{Y}$ is. 
+When working with **prediction**, $\hat{f}$ is a "black box," i.e. the exact form of it is not our concern, but the accuracy of how it helps us predict $\hat{Y}$ is. 
 
 Since $\hat{f}$ will always contain that "irreducible error," $ϵ$, we talked about earlier, then for a fixed $\hat{f}$ and $X$ we can show the average/expected value to be the squared difference between  the predicted and actual values with $Var(ϵ)$ representing variance in the irreducible error:
 
