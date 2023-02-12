@@ -103,3 +103,43 @@ These are the two categories that summarize most statistical learning problems:
 
 - **Regression**: Problems with quantitative/numeric responses
 - **Classification**: Problems with qualitative/categorical responses.
+
+### Assessing Model Accuracy
+
+#### **Measuring Quality of Fit**
+
+In order to assess the extent to which a predicted response value for a given observation is close to the true value, regression relies on **mean squared error** as the most common quantification:
+
+$MSE = \frac{1}{n} \sum_{i=1}^n (y_i - \hat{f}(x_i))^2$
+
+Where $\hat{f}(x_i)$ is the prediction for the $i$th observation. MSE is small for predicted responses close to the true ones.
+
+> :bulb: The **degress of freedom** of a given function is a quantity that summarizes the flexibility of a given curve. As flexibility increases, training MSE declines.
+
+> :bulb: **Overfitting** of data occurs when there is a small training MSE but a high test MSE.
+
+![Ch2 MSE Graphs](/images/statistcal_learning/ch2-mse-graphs.png)
+
+In the graphs above, the left hand side shows a true $f$ in black, a linear model in orange, and two smoothing splines in blue and green. On the right we see that the green spline has very low MSE, and high flexibility but poor test MSE. Blue has the best of both worlds, and makes sense seeing how it most visually matches $f$.
+
+In Ch 5 _cross-validation_ will be discussed as an important method for estimating test MSE using training data.
+
+#### **The Bias-Variance Trade-Off**
+
+It is possible to show that the expected test MSE, for a given value $x_0$, can always be decomposed into the sum of 3 fundamental quantities:
+
+1) **variance** of $\hat{f}(x_0)$
+2) The squared **bias** of  $\hat{f}(x_0)$
+3) The variance of the error, $ϵ$
+
+The full equation being:
+
+$E(y_0 - \hat{f}(x_0))^2 = Var(\hat{f}(x_0)) + [Bias(\hat{f}(x_0))]^2 + Var(ϵ)$
+
+$E(y_0 - \hat{f}(x_0))^2$ = Expected Test MSE at $x_0$. In order to minimize test MSE, we need low variance and low bias.
+
+> :bulb: **variance** = amount by which $\hat{f}$ would change if we estimated it using a different training set. High variance means small changes in the training data can result in large change in $\hat{f}$. Generally, more flexible modelling methods have higher variance.
+
+> :bulb: **bias** = The error introduced by appoximating a real life model. Ex: linear regression assumes a linear relationship, but very few real life problems are ever linear. Therefore, linear regression will introduce some bias in the estimate of $f$. Generally, more flexible methods have less bias.
+
+Determining how to balance bias, variance, and MSE is the **bias-variance trade-off**.
