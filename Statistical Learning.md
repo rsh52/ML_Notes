@@ -29,7 +29,7 @@ This is largely syllabus week style topics. Not much here in terms of notes.
 
 All datasets used in this course are found in the `ISLR2` package.
 
-![Ch 1 Datasets](/images/statistcal_learning/ch1-datasets.png)
+![Ch 1 Datasets](/images/statistical_learning/ch1-datasets.png)
 
 # Chapter 2 - Statistical Learning
 
@@ -49,7 +49,7 @@ In the above formula, $Y$ is your _response_ or _dependent_ variable. $f$ is a f
 
 The below example of the `Income` dataset shows $ϵ$ in the vertical lines, i.e. the average of them is zero:
 
-![CH2 Income Dataset](/images/statistcal_learning/ch2-income-eda.png)
+![CH2 Income Dataset](/images/statistical_learning/ch2-income-eda.png)
 
 > :bulb: "In essence, statistical learning refers to a set of approaches for estimating
 $f$."
@@ -66,7 +66,7 @@ When working with **prediction**, $\hat{f}$ is a "black box," i.e. the exact for
 
 Since $\hat{f}$ will always contain that "irreducible error," $ϵ$, we talked about earlier, then for a fixed $\hat{f}$ and $X$ we can show the average/expected value to be the squared difference between  the predicted and actual values with $Var(ϵ)$ representing variance in the irreducible error:
 
-![Ch2 Error Averaging Eq](/images/statistcal_learning/ch2-eq23.png)
+![Ch2 Error Averaging Eq](/images/statistical_learning/ch2-eq23.png)
 
 When working with **inference**, $\hat{f}$ is no longer a black box because the exact form of it needs to be known. There are times when both are needed in combination.
 
@@ -118,7 +118,7 @@ Where $\hat{f}(x_i)$ is the prediction for the $i$th observation. MSE is small f
 
 > :bulb: **Overfitting** of data occurs when there is a small training MSE but a high test MSE.
 
-![Ch2 MSE Graphs](/images/statistcal_learning/ch2-mse-graphs.png)
+![Ch2 MSE Graphs](/images/statistical_learning/ch2-mse-graphs.png)
 
 In the graphs above, the left hand side shows a true $f$ in black, a linear model in orange, and two smoothing splines in blue and green. On the right we see that the green spline has very low MSE, and high flexibility but poor test MSE. Blue has the best of both worlds, and makes sense seeing how it most visually matches $f$.
 
@@ -143,3 +143,52 @@ $E(y_0 - \hat{f}(x_0))^2$ = Expected Test MSE at $x_0$. In order to minimize tes
 > :bulb: **bias** = The error introduced by appoximating a real life model. Ex: linear regression assumes a linear relationship, but very few real life problems are ever linear. Therefore, linear regression will introduce some bias in the estimate of $f$. Generally, more flexible methods have less bias.
 
 Determining how to balance bias, variance, and MSE is the **bias-variance trade-off**.
+
+### The Classification Setting
+
+Up till now, we've focused on the regression setting, but many of these concepts carry over to classification with some modifying. One key change is $y_i$ is now qualitative instead of quantitative.
+
+Here, the most common approach for quanitfying accuracy of our estimate $\hat{f}$, is the training _error rate_, i.e. the proportion of mistakes made if we apply the estimated $\hat{f}$  to the training observations:
+
+$\frac{1}{n} \sum_{i=1}^n I(y_i \neq \hat{y}_i)$
+
+Where:
+
+- $\hat{y}_i$ = predicted class label for the $i$th observation using $\hat{f}$
+- $I(y_i \neq \hat{y}_i)$ = "_indicator variable_" equal to 1 if $y_i \neq \hat{y}_i$ and 0 if $y_i = \hat{y}_i$
+
+Unlike the training error rate above, the test error rate for a given set of test observations of the form $(x_0, y_0)$ is given by:
+
+$Ave(I(y_i \neq \hat{y}_i))$
+
+#### **The Bayes Classifier**
+
+$Pr(Y = j|X = x_0)$
+
+The equation above is used to evidence a simple classifier that assigns each observation to the most likely class, given its predictor values. This is a **conditional probability**, i.e. the probability that $Y = j$ given observed predictor $X_0$. This is the **Bayes Classifier** :bulb:.
+
+In a simple example with two possible repsonsible values, the Bayes Classifier predicts class 1 if $Pr(Y = 1|X = x_0)$ > 0.5, and class 2 otherwise. In the image below, this is exemplified by the purple line, known as the **Bayes decision boundary** (i.e. the points at which the probability of either class is exactly 50%):
+
+![Ch2 Bayes Decision Boundary](/images/statistical_learning/ch2-bayes-decision-boundary.png)
+
+Observations that fall on either side of the decision boundary are assigned to those classes.
+
+> :bulb: The _Bayes error rate_ is the lowest possible test error rate produced by the Bayes Classifier. And is given by:
+
+![Ch2 Bayes Error Rate](/images/statistical_learning/ch2-bayes-error-rate.png)
+
+#### **K-Nearest Neighbors**
+
+K-Nearest neighbors (KNN) is one method for classifying obervations based on highest estimated probabilities. Given a positive integer, $K$, and a test observation $x_0$, KNN first looks at the closest values to the observation from the training data ($N_0$) and then estimates the conditional probability for class $j$ as a fraction of the points in $N_0$ whose repsonse values equal $j$.
+
+![Ch2 KNN](/images/statistical_learning/ch2-knn.png)
+
+In the example below with two known classes (blue and orange) and an unknown class (black cross), a $K$ of 3 tells us to look at the first 3 neighbors to the point in question and classify. 
+
+![Ch2 KNN example graph](/images/statistical_learning/ch2-knn-ex-graph.png)
+
+Since there are 2 blue values and 1 orange in the given $K$, the estimated probabilities are 2/3 blue and 1/3 orange for the unknown value.
+
+While the Bayes classifier is an impossible standard to reach, the KNN decision boundary can get surprisingly close to it.
+
+Low $K$'s are very flexible, indicating low bias but high variance. High $K$'s make for less flexibility, and makes for high bias and low variance.
