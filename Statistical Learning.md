@@ -9,7 +9,7 @@ This running markdown document will serve to store notes related to the [EdX Sta
 - [ISLR Tidy Models Labs](https://emilhvitfeldt.github.io/ISLR-tidymodels-labs/)
 - [Introduction to Statistical Learning Using R Book Club](https://r4ds.github.io/bookclub-islr/)
 
-### Notation:
+### Notation
 
 - $p$ = number of vars to make predications/columns
 - $n$ = number of distinct datapoints/rows in sample
@@ -192,3 +192,47 @@ Since there are 2 blue values and 1 orange in the given $K$, the estimated proba
 While the Bayes classifier is an impossible standard to reach, the KNN decision boundary can get surprisingly close to it.
 
 Low $K$'s are very flexible, indicating low bias but high variance. High $K$'s make for less flexibility, and makes for high bias and low variance.
+
+# Chapter 3 - Linear Regression
+
+## Ch 3.1 - Simple Linear Regression
+
+The simple linear regression relationship mathematically is:
+
+$Y \approx \beta_0 + \beta_1 X$
+
+You can say "we are _regressing_ Y on X." Example: We can regress "sales" onto "TV" bu fitting the model:
+
+$sales \approx \beta_0 + \beta_1 \times TV$
+
+- $\beta_0$ = intercept
+- $\beta_1$ = slope
+
+Once training data is used to provide estimates for $\hat\beta_0$ and $\hat\beta_1$, future sales can be predicted using a particular value of TV using:
+
+$\hat{y} = \hat\beta_0 +\hat\beta_1x$
+
+- $\hat{y}$ = prediction of Y on the basis of X = $x$
+- The hat symbol denotes an estimated value for an unknown param or coefficient
+
+## Ch 3.1.1 Estimating the Coefficients
+
+Using the estimation function above, we can use _least squares_ to try and make the best linear approximation that fits the values.
+
+The **residual** is the difference between an observed value and the predicted value by the linear model (the gray lines in the plot below):
+
+![Ch3 Least Squares](/images/statistical_learning/ch3-least-squares.png)
+
+Each residual at $i$th observation is represented as $e_i = y_i - \hat{y}_i$.
+
+The **residual sum of squares (RSS)** is defined as:
+
+$RSS = e_1^2 + e_2^2 + ... e_n^2$
+
+Or:
+
+$RSS = (y_1-\hat\beta_0-\hat\beta_1x_1)^2 + ...(y_1-\hat\beta_0-\hat\beta_1x_n)^2$
+
+And finally, the **least squares coefficient estimates** the values for the coefficients that minimize the RSS are:
+
+![Ch3 RSS Minimizers Eq](/images/statistical_learning/ch3-rss-minimizers.png)
