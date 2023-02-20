@@ -236,3 +236,65 @@ $RSS = (y_1-\hat\beta_0-\hat\beta_1x_1)^2 + ...(y_1-\hat\beta_0-\hat\beta_1x_n)^
 And finally, the **least squares coefficient estimates** the values for the coefficients that minimize the RSS are:
 
 ![Ch3 RSS Minimizers Eq](/images/statistical_learning/ch3-rss-minimizers.png)
+
+## Ch 3.1.2 Assess the Accuracy of Coefficient Estimates
+
+In the equation below:
+
+$Y \approx \beta_0 + \beta_1 X + \epsilon$
+
+- $\beta_0$ = intercept - expected value of $Y$ when $X$ is 0.
+- $\beta_1$ = slope - average increase in $Y$ associated with a one-unit increase in $X$
+- $\epsilon$ = error term for what we miss with this model
+
+Other definitions:
+
+- **Population Regression Line**: best linear approximation to the true relationship between $X$ and $Y$.
+- **Least Squares Line**: characterization of the least squares regression coefficient estimates
+
+It is reasonable to assume that for a given population where $\mu$ is the population mean and $\hat\mu$ is the sample mean, that when using many observations they will be equivalent. However, a single estimate of $\hat\mu$ will be off by some amount. To calculate that amount, we compute the **standard error** ($SE$):
+
+$Var(\hat\mu) = SE(\hat\mu)^2 = \frac{\sigma^2}{n}$
+
+Where $\sigma$ is the **standard deviation** of each of the realizations $y_i$ of $Y$. The standard error tells us the average amount that the estimate of $\hat\mu$ differs from the actual value of $\mu$. Thanks to $n$, we know that the more observations we have, the smaller the standard error will be! :bulb:
+
+Similarly, $SE$ can be computed for the intercept and slope values as well:
+
+![Ch3 SE Intercept and Slope](/images/statistical_learning/ch3-se-intercept-slope.png)
+
+Standard Error can also be used to calculate **confidence intervals**. Meaning, with a confidence interval of 95% if we take repeated samples and construct the confidence interval for each sample, 95% of the intervals will contain the true unknown value of the parameter.
+
+In linear regression, the slope and intercept variable confidence intervals take the form:
+
+$\hat\beta_1 \plusmn 2 \cdot SE(\hat\beta_1)$
+
+$\hat\beta_0 \plusmn 2 \cdot SE(\hat\beta_0)$
+
+Where the _dot product_ is the sum of the corresponding products of the described vector. The $\plusmn$ represents the two way interval range.
+
+This can be very useful for quickly determining if a variable has no relationship with the **null hypothesis** ($H_0$).
+
+If $\beta_1$ = 0 then the model eliminates $X$ as a relational variable. However, determining how far from the true value is acceptable is determined by computing the **t-statistic**, responsible for measuring the number of standard deviations that $\beta_1$ is from 0.
+
+:bulb: The **p-value** indicates the likelihood of a substantial association between the predictor and the response due to chance. A small p-value is indicative of an association between the predictor and the response. When one exists, it is reasont to _reject the the null hypothesis_.
+
+## Ch 3.1.3 Assessing the Accuracy of the Model
+
+The quality of a linear regression fit is typically assessed by two related qualities:
+
+- $RSE$ (Residual Standard Error): An estimate of the standard deviation of $\epsilon$, i.e. the average amount that the response will deviate from the true regression line
+- $R^2$ statistic: The proportion of variance in $Y$ that can be explained by $X$, i.e. a measure of the linear relationship between $X$ and $Y$
+
+RSE:
+
+$RSE = \sqrt{\frac{1}{n02}RSS} = \sqrt{\frac{1}{n-2}\sum(y_i - \hat{y_i})^2}$
+
+RSE is considered a measure of a the _lack of fit_ of the model to the data. Small RSE means our model fits the data very well.
+
+$R^2$:
+
+$R^2 = \frac{RSS - RSS}{TSS} = 1 - \frac{RSS}{TSS}$ (Where TSS is the _total sum of squares_)
+
+An $R^2$ statistic close to 1 indicates a large proportion of the variability in the response is explained by the regression. A value close to 0, meaning no explanation, can be caused by a wrong model or high variance, or both.
+
+In the example of sales in relation to television ads, an $R^2$ value of 0.612 can be read as variance in sales reduced by 61%. It is a measurement of the correlation between two variables. The $p$ value and $t$ statistic, however, measureevidence that there is a non zero association.
