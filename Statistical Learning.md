@@ -21,7 +21,7 @@ This running markdown document will serve to store notes related to the [EdX Sta
 - $ϵ$ = irreducible error
 - $IR$ = “real numbers”
 
-# Chapter 1 - Introduction
+# Ch 1 - Introduction
 
 This is largely syllabus week style topics. Not much here in terms of notes.
 
@@ -33,9 +33,9 @@ All datasets used in this course are found in the `ISLR2` package.
 
 # Chapter 2 - Statistical Learning
 
-## Ch 2.1
+## Ch 2.1 - What is Statistical Learning?
 
-### Introduction to Regression Models
+### Ch 2.1.1 Introduction to Regression Models & Why esimate $f$?
 
 A vector of inputs can be thought of as $X = (X_1, X_2, ... X_n)$. $X$ indicates the _input_ variables or _predictors_. Also can be termed "independent variables" or "features".
 
@@ -54,8 +54,6 @@ The below example of the `Income` dataset shows $ϵ$ in the vertical lines, i.e.
 > :bulb: "In essence, statistical learning refers to a set of approaches for estimating
 $f$."
 
-### Why estimate $f$?
-
 We estimate $f$ for **prediction** and **inference**.
 
 Consider the equation:
@@ -70,7 +68,7 @@ Since $\hat{f}$ will always contain that "irreducible error," $ϵ$, we talked ab
 
 When working with **inference**, $\hat{f}$ is no longer a black box because the exact form of it needs to be known. There are times when both are needed in combination.
 
-### How do we estimate $f$?
+### Ch 2.1.2 How do we estimate $f$?
 
 #### **Parametric Methods**
 
@@ -85,28 +83,28 @@ This is referred to as a "parametric" approach because estimating $f$ is done by
 
 These methods make no explicit assumptions about the form of $f$, instead they look to estimate $f$ as smoothly as possible. The potential for accuracy with different shapes/forms is much greater since no assumptions are made about $f$. The downside is they require a very large number of observations. These functions can also lead to more _overfitting_ of the data.
 
-### The Trade-Off Between Prediction Accuracy and Model Interpretability
+### Ch 2.1.3 - The Trade-Off Between Prediction Accuracy and Model Interpretability
 
 - Parametric approaches like linear regression is relatively inflexible
 - Non parametric approaches like splines are more flexible
 
 In examples of inference, parametric approaches can be much more interpretable and understandable. Non-parametric ones can be much more difficult to understand how any one predictor is associated with the response.
 
-### Supervised versus Unsupervised Learning
+### Ch 2.1.4 - Supervised versus Unsupervised Learning
 
 These are the two categories that summarize most statistical learning problems:
 
 - **Supervised**: Fitting a model related to a response and predictors for either prediction or inference. Supervised learning involved labeled data witha response.
 - **Unsupervised**: Observation of measurements, but no associated response. There are no labels, instead we are deriving clusters/patterns to understand relationships.
 
-### Regression v. Classification Problems
+### Ch 2.1.5 - Regression v. Classification Problems
 
 - **Regression**: Problems with quantitative/numeric responses
 - **Classification**: Problems with qualitative/categorical responses.
 
-### Assessing Model Accuracy
+## Ch 2.2 - Assessing Model Accuracy
 
-#### **Measuring Quality of Fit**
+### Ch 2.2.1 - Measuring Quality of Fit
 
 In order to assess the extent to which a predicted response value for a given observation is close to the true value, regression relies on **mean squared error** as the most common quantification:
 
@@ -124,7 +122,7 @@ In the graphs above, the left hand side shows a true $f$ in black, a linear mode
 
 In Ch 5 _cross-validation_ will be discussed as an important method for estimating test MSE using training data.
 
-#### **The Bias-Variance Trade-Off**
+### Ch 2.2.2 - The Bias-Variance Trade-Off
 
 It is possible to show that the expected test MSE, for a given value $x_0$, can always be decomposed into the sum of 3 fundamental quantities:
 
@@ -144,7 +142,7 @@ $E(y_0 - \hat{f}(x_0))^2$ = Expected Test MSE at $x_0$. In order to minimize tes
 
 Determining how to balance bias, variance, and MSE is the **bias-variance trade-off**.
 
-### The Classification Setting
+### Ch 2.2.3 - The Classification Setting
 
 Up till now, we've focused on the regression setting, but many of these concepts carry over to classification with some modifying. One key change is $y_i$ is now qualitative instead of quantitative.
 
@@ -287,7 +285,7 @@ The quality of a linear regression fit is typically assessed by two related qual
 
 RSE:
 
-$RSE = \sqrt{\frac{1}{n02}RSS} = \sqrt{\frac{1}{n-2}\sum(y_i - \hat{y_i})^2}$
+$RSE = \sqrt{\frac{1}{n-2}RSS} = \sqrt{\frac{1}{n-2}\sum(y_i - \hat{y_i})^2}$
 
 RSE is considered a measure of a the _lack of fit_ of the model to the data. Small RSE means our model fits the data very well.
 
@@ -298,3 +296,37 @@ $R^2 = \frac{RSS - RSS}{TSS} = 1 - \frac{RSS}{TSS}$ (Where TSS is the _total sum
 An $R^2$ statistic close to 1 indicates a large proportion of the variability in the response is explained by the regression. A value close to 0, meaning no explanation, can be caused by a wrong model or high variance, or both.
 
 In the example of sales in relation to television ads, an $R^2$ value of 0.612 can be read as variance in sales reduced by 61%. It is a measurement of the correlation between two variables. The $p$ value and $t$ statistic, however, measureevidence that there is a non zero association.
+
+## Ch 3.2 - Multiple Linear Regression
+
+The multiple linear regression model seeks to combine multiple predictors instead of creating multiple single linear regression models on the predictors separately. Instead, each predictor gets its own slope variable. Therefore, the model takes on the form:
+
+$Y = \beta_0 + \beta_1X_1 + \beta_2X_2 + ... + \beta_pX_p + \epsilon$
+
+### Ch 3.2.1 - Estimating the Regression Coefficients
+
+Just like in simple linear regression, all $\beta$ values are unknown and must be estimated. This is done almost identically to the RSS method in simple regression:
+
+$RSS = \sum(y_i-\hat{y}_i)^2 = \sum(y_i - \hat\beta_0 - \hat\beta_1x_{i1} - ...\hat\beta_px_{ip})^2$
+
+Whereas before we saw a simple line, with, say, 2 predictors ($p$) we see a plane:
+
+![Ch3 Multi RSS Plane](/images/statistical_learning/ch3-multi-plane.png)
+
+When looking at a multiple linear regression model and assessing the results, evaluating any single predictor is done while holding the other predictors constant. This can result in differences that multiple individual single linear models would relate.
+
+> An absurd example: simple linear regressions done separately might show a positive correlation between shark bites and ice cream sales, but multiple linear regression would show this is not the case with the combined predictor of high temperatures.
+
+### Ch 3.2.2 - Some Important Questions
+
+Multiple linear regression necessitates the following:
+
+1. Is at least one of the predictors $X1,X2, . . . ,Xp$ useful in predicting
+the response?
+2. Do all the predictors help to explain $Y$ , or is only a subset of the
+predictors useful?
+3. How well does the model fit the data?
+4. Given a set of predictor values, what response value should we predict,
+and how accurate is our prediction?
+
+Hypothesis testing is performed by computing the **F-statistic**. A F-statistic close to 1 indiciates no relationship between the response and predictors, but if greater than 1 then indicative that there is.
