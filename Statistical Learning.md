@@ -376,6 +376,8 @@ With African American being the third predictor, the _predicted balance_ for AA 
 
 ### Ch 3.3.2 Extensions of the Linear Model
 
+Linear models are assumed to be _additive_ and _linear_. Additive meaning the association between a predictor and the response does not depend on the values of the othe predictors.
+
 A **_synergy effect_** (in marketing) or an **_interaction effect_** (in statistics) describes when two predictors offer more of a response than they do separately. Example: if Radio and TV have an impact on sales, but combined their impact is even greater.
 
 **The hierarchy principle**: if we include an interaction in a model, we should also include the _main effects_, even if the p-values associated with their coefficients are not significant.
@@ -387,8 +389,14 @@ $Y = \beta_0 + \beta_1X + \beta_2X^2 + ... \beta_nX^n + \epsilon_i$
 ### Ch 3.3.3 Potential Problems
 
 1) Non-linearity of the response-predictor relationships
+    - Residual plots can be used to map out residuals. If a pattern exists, it could be indicative the model is poor.
 2) Correlation of error terms
+    - Leads to an unwarranted sense of confidence in our model. Residuals can again be plotted, but in the example of time series if it can be seen that adjacent residuals are close in value, it can indiciate a positive correlation. This is considered **_tracking_**.
 3) Non-constant variance of error terms
+    - Non-constance in error terms can be identified with **_heteroscedasticity_** which is shown in a "funnel shape" in the residuals plot (i.e. the magnitude of the residuals increases with the fitted values).
 4) Outliers
+    - Residual plots can be used to identify outliers. Outliers can greatly affect RSE and $R^2$ values. Outliers come up with when the response is unusual given the predictor.
 5) High-leverage points
+    - Conversely, high-leverage occurs when there is an unusual predictor i.e. a predictor value is vastly different from the others. It is very important to identify these value because they can invalidate the entire fit of the model. Computing an observation's leverage is done with the equation defined by the **_leverage statistic_**, which varies for different models.
 6) Collinearity
+    - Occurrs when two or more predictors are closely related. This can create difficulty in determining the effect a predictor has. There can also exist **_multicollinearity_** when 3+ variables have high correlation even if they do not as pairs. A correlation matrix can help visually determine collineartiy, but not always, and you may want to employ the **_variance inflation factor_** (VIF).
