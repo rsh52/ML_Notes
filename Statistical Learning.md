@@ -400,3 +400,24 @@ $Y = \beta_0 + \beta_1X + \beta_2X^2 + ... \beta_nX^n + \epsilon_i$
     - Conversely, high-leverage occurs when there is an unusual predictor i.e. a predictor value is vastly different from the others. It is very important to identify these value because they can invalidate the entire fit of the model. Computing an observation's leverage is done with the equation defined by the **_leverage statistic_**, which varies for different models.
 6) Collinearity
     - Occurrs when two or more predictors are closely related. This can create difficulty in determining the effect a predictor has. There can also exist **_multicollinearity_** when 3+ variables have high correlation even if they do not as pairs. A correlation matrix can help visually determine collineartiy, but not always, and you may want to employ the **_variance inflation factor_** (VIF).
+
+# Chapter 4 - Classification
+
+## Ch 4.1 - An Overview of Classification
+
+General notes on classification, terms like _categorization_ and introduction to the example of the credit card balance versus default dataset
+
+## Ch 4.2 - Why Not Linear Regression?
+
+For a given example where a set of predictors may have 3+ classifiers, linear regression assumes the difference between the classifiers is of the same magnitude. In reality, there is no reason to assume this. Linear regression is better suited for binary classification (0/1) and use of dummy variables.
+
+Two reasons not to perform classification using a regression method:
+
+1) A regression method cannot accommodate a qualitative response with more than two classes
+2) a regression method will not provide meaningful estimates of $Pr(Y|X)$, even with just 2 classes.
+
+Using the credit card default dataset, probabilities of defaulting can wind up being _negative_ using linear regression:
+
+![Ch4 Linear Regression Negative Probability](/images/statistical_learning/ch4-linear-reg-negative.png)
+
+## Ch 4.3 - Logistic Regression
