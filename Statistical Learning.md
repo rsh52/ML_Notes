@@ -421,3 +421,49 @@ Using the credit card default dataset, probabilities of defaulting can wind up b
 ![Ch4 Linear Regression Negative Probability](/images/statistical_learning/ch4-linear-reg-negative.png)
 
 ## Ch 4.3 - Logistic Regression
+
+Rather than modeling repsonse $Y$ directly, logistic regression models the _probability_ that $Y$ belongs to a particular category.
+
+### Ch 4.3.1 The Logistic Model
+
+Since probabilities must always fall between 0 and 1, and not negative or greater than 1 as shown above, the logistic function is used to ensure sensible outputs:
+
+$p(X) = \frac{e^{\beta_0 + \beta_1X}}{1+e^{\beta_0 + \beta_1X}}$
+
+Fitting the model is done using a method called _maximum likelihood_. The logistic function always produces an S-shaped curve as shown in the image above.
+
+Taking the formula above and manipulating it we can produces the _odds_, which can take on any value greater than or equal to 0:
+
+$\frac{p(X)}{1-p(X)} = e^{\beta_0 + \beta_1X}$
+
+Taking the _log_ of both sides removes $e$ and gives you the _log odds_ or _logit_.
+
+### Ch 4.3.2 Estimating the Regression Coefficients
+
+This section covers _maximum likelihood_ which can be though of like least squares for model fitting in linear regression.
+
+Seek esimates for $\beta_0$ and $\beta_1$ such that the predicted probability $\hat{p}(x_i)$ is close to the true value of the result.
+
+Luckily maximum likelihood fitting can be done easily in R.
+
+### Ch 4.3.3 Making Predictions
+
+Basically you make your model, you plug in your values, you get your prediction :sparkles:
+
+### Ch 4.3.4 Multiple Logistic Regression
+
+Similar to the multiple linear regression model, the multiple logistic regression model can be written as:
+
+$p(X) = \frac{e^{\beta_0 + \beta_1X+...\beta_pX_p}}{1 + e^{\beta_0 + \beta_1X+...\beta_pX_p}}$
+
+Maximum likelihood is still used to estimate all of the coefficients.
+
+This chapter shows a good example of how multiple logisitc regression can determine opposite end results than single for the same dataset.
+
+### Ch 4.3.5 Multinomial Logistic Regression
+
+When the repsonse variable is non-singular, we refer to $K > 1$. In the student default example $K=2$ (a student defaults or does not). But in the example of classifying medical condition in an emergency room (stroke, drug oversoe, seizure), $K=3$. Acommodating this is known as _multinomial logistic regression_.
+
+Selection of the baseline is unimportant, but interpretation of the coefficients is very important since it is tied to the choice of baselines.
+
+An alternative to this approach is to use _softmax_ coding, where rather than selecting a baseline class all $K$ classes are treated symmetrically.
