@@ -424,7 +424,7 @@ Using the credit card default dataset, probabilities of defaulting can wind up b
 
 Rather than modeling repsonse $Y$ directly, logistic regression models the _probability_ that $Y$ belongs to a particular category.
 
-### Ch 4.3.1 The Logistic Model
+### Ch 4.3.1 - The Logistic Model
 
 Since probabilities must always fall between 0 and 1, and not negative or greater than 1 as shown above, the logistic function is used to ensure sensible outputs:
 
@@ -438,7 +438,7 @@ $\frac{p(X)}{1-p(X)} = e^{\beta_0 + \beta_1X}$
 
 Taking the _log_ of both sides removes $e$ and gives you the _log odds_ or _logit_.
 
-### Ch 4.3.2 Estimating the Regression Coefficients
+### Ch 4.3.2 - Estimating the Regression Coefficients
 
 This section covers _maximum likelihood_ which can be though of like least squares for model fitting in linear regression.
 
@@ -446,11 +446,11 @@ Seek esimates for $\beta_0$ and $\beta_1$ such that the predicted probability $\
 
 Luckily maximum likelihood fitting can be done easily in R.
 
-### Ch 4.3.3 Making Predictions
+### Ch 4.3.3 - Making Predictions
 
 Basically you make your model, you plug in your values, you get your prediction :sparkles:
 
-### Ch 4.3.4 Multiple Logistic Regression
+### Ch 4.3.4 - Multiple Logistic Regression
 
 Similar to the multiple linear regression model, the multiple logistic regression model can be written as:
 
@@ -460,10 +460,83 @@ Maximum likelihood is still used to estimate all of the coefficients.
 
 This chapter shows a good example of how multiple logisitc regression can determine opposite end results than single for the same dataset.
 
-### Ch 4.3.5 Multinomial Logistic Regression
+### Ch 4.3.5 - Multinomial Logistic Regression
 
 When the repsonse variable is non-singular, we refer to $K > 1$. In the student default example $K=2$ (a student defaults or does not). But in the example of classifying medical condition in an emergency room (stroke, drug oversoe, seizure), $K=3$. Acommodating this is known as _multinomial logistic regression_.
 
 Selection of the baseline is unimportant, but interpretation of the coefficients is very important since it is tied to the choice of baselines.
 
 An alternative to this approach is to use _softmax_ coding, where rather than selecting a baseline class all $K$ classes are treated symmetrically.
+
+## Ch 4.4 - Generative Models for Classification
+
+In these approaches, the distribution of the predictors is modelled separately in each response class. Baye's theroem is then used to flip the estimates. When the distribution of the predictors within each class is assumed to be normal, the models becomes similar to logistic regression. This is used in the following cases:
+
+- Substantial separation between the two classes, which leads to model instability in logistic regression.
+- If the distribution of the predictors is approximately normal in each of the classes and the sample size is small, these methods will be more accurate.
+- These methods can be extended to cases with more than two response classes.
+
+This section describes the following 3 classifiers that use different estimates for approximating the Bayes classifier:
+
+- Linear discriminant Analysis
+- Quadratic Discriminant Analysis
+- Naive Bayes
+
+### Ch 4.4.1 - Linear Discriminant Analysis for $p$ = 1
+
+Assume we only have 1 predictor, $p = 1$, and we would like to obtain an estimate for $f_k(x)$. We will classify an observation to the class for which $p_k(x)$ is the greatest.
+
+$f_k(x)$ is assumed to be nomral/Gaussian. In this setting the normal density looks like:
+
+$f_k(x) = \frac{1}{\sqrt{2\pi}\sigma_k}exp(-\frac{1}{2\pi\sigma_k^2}(x-\mu_k)^2)$
+
+- $\mu_k$ = mean parameter for $k$th class
+- $\sigma_k^2$ = variance parameter for $k$th class, we assume here that variance is equal across all classes, $K$
+- $\pi_k$ = prior probability that an observation belongs to the $k$th class
+
+_LDA_ method approximates the Bayes classifier by plugging in estimates for $\mu_k$, $\sigma_k^2$, and $\pi_k$:
+
+![Ch 4 pi and mu estimates](/images/statistical_learning/ch4-pi-and-mu-estimates.png)
+
+The Bayes decision boudary in effect is show below:
+
+![Ch 4 Bayes Descision p = 1](/images/statistical_learning/ch4-bayes-decision-p1.png)
+
+### Ch 4.4.2 - Linear Discriminant Analysis for $p > 1$
+
+Now we use _LDA_ above with multiple predictors, $p$. We start by assuming that the predictors, $X_p$, are drawn from a _multivariate Gaussian / mulitvariate normal_ distribution. This distribution assumes each predictor follows a one-dimensional normal distribution, with some correlation between each pair of $X$.
+
+If plotting the density functions of two predictors, they will be considered **uncorrelated** if the distribution is a normal bell shape (left), but correlated if the variances are unequal (right):
+
+![Ch 4 LDA Correlation](/images/statistical_learning/ch4-lda-correlation.png)
+
+The Bayes decision boundary in effect is show below:
+
+![Ch 4 Bayes Descision p > 1](/images/statistical_learning/ch4-bayes-decision-p2.png)
+
+Each _pair of classes_ has its own decision boundary.
+
+![Ch4 Confusion Matrix](/images/statistical_learning/ch4-confusion-matrix.png)
+
+When making a confusion matrix, two key terms are of importance:
+
+- Sensitivity: The percentage of true positives (trues correctly captured as trues)
+- Specificity: The true negatives (falses correctly captured as falses)
+
+These types of errors for all possible thresholds is captured using the **_receiver operating characteristics_** curve (**ROC**). One axis shows sensitivity (true positive) rates, the other shows false positive rates via 1-specificity. The higher the _area under the curve_ (AUC) the better. An AUC of 0.5 indicates a model performs no better than chance.
+
+Terms defined below:
+
+![Ch4 Matrix terms](/images/statistical_learning/ch4-matrix-terms.png)
+
+### Ch 4.4.3 - Quadratic Discriminant Analysis
+
+Like LDA, assumes observations from each class are drawn from a Gaussian distribution and plugs estimates for the parameters into Bayes' theorem to perform prediction. Unlike LDA, assumes each class has its own covaraince matrix. QDA is much more flexible, and this can lead to higher variance and lower bias. LDA is better than QDA for fewer training observations where reducing variance is crucial. QDA is recommended if the training set is very large so variance is not a major concern.
+
+### Ch 4.4.4 Naive Bayes
+
+Recall that Bayes' theorem provides an expression for the posterior probability. Naive Bayes' avoids some of the simple, strict assumptions of LDA and QDA by assuming :
+
+> Within the $k$th class, the $p$ predictors are independent.
+
+I.e. we assume there is no relationship between the predictors. Naive Bayes introduces some bias, but reduces variance, and works very well when $n$ is not large enough relative to $p$ for effective join distribution estimates within each class.
