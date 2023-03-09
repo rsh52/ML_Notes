@@ -533,10 +533,39 @@ Terms defined below:
 
 Like LDA, assumes observations from each class are drawn from a Gaussian distribution and plugs estimates for the parameters into Bayes' theorem to perform prediction. Unlike LDA, assumes each class has its own covaraince matrix. QDA is much more flexible, and this can lead to higher variance and lower bias. LDA is better than QDA for fewer training observations where reducing variance is crucial. QDA is recommended if the training set is very large so variance is not a major concern.
 
-### Ch 4.4.4 Naive Bayes
+### Ch 4.4.4 - Naive Bayes
 
 Recall that Bayes' theorem provides an expression for the posterior probability. Naive Bayes' avoids some of the simple, strict assumptions of LDA and QDA by assuming :
 
 > Within the $k$th class, the $p$ predictors are independent.
 
 I.e. we assume there is no relationship between the predictors. Naive Bayes introduces some bias, but reduces variance, and works very well when $n$ is not large enough relative to $p$ for effective join distribution estimates within each class.
+
+## Ch 4.5 - A Comparison of Classification Methods
+
+### Ch 4.5.1 - An Analytical Comparison
+
+- LDA is a special case of QDA
+- LDA is a special case of naive Bayes _and_ naive Bayes is a special case of LDA
+- Neither QDA nor Naive Bayes are special cases of each other. Naive Bayes can produce more flexible fits, but QDA can be more accurate for predictors that have interactions which are important for discriminating between classes.
+
+Selecting the apporpriate method depends on the true distribution of the predictors in each class, $K$, and other conisderations like $n$ and $p$ (see bias-variance trade off).
+
+Comparison with KNN:
+
+- KNN, being non-parametric, is better than LDA and logistic regression for non linear decision boundaries (with large $n$ and small $p$)
+- KNN requires a lot of observations $n$ with relatively few predictors $p$
+- QDA may be preferred when $n$ is small or $p$ is somewhat large
+- KNN does not tell which predictors are important
+
+## Ch 4.6 - Generalized Linear Models
+
+For these models, we are interested in response, $Y$, that is neither quantitative nor qualitative. An example is _**counts**_ like counts of bike shares in a given time frame. These values are non-negative. This may be similar to census tracking.
+
+A linear model can perform well, but in the example of bikeshare data, may predict _negative_ users. This leads to validity questions of the coefficients arrived at and assumptions made.
+
+Instead, **Poisson Regression** can be a better approach, dictated by the _Poisson Distribution_, and can typically used to be model counts.
+
+The Poisson Regression model requires attention to interpretation. It is also better at handling the **_mean-variance relationship_** of data over linear regression since linear regression always uses a constant value for variance. In the bike share data, usage and variance are both much higher during unfavorable weather conditions. Poisson Regression will also never have negative values.
+
+Linear regression, logistic regression, and Poisson are all members of the _generalized linear model (GLM)_ family. Other examples include Gamma regression and negative binomial regression. 
