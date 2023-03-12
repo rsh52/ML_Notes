@@ -376,6 +376,8 @@ With African American being the third predictor, the _predicted balance_ for AA 
 
 ### Ch 3.3.2 Extensions of the Linear Model
 
+Linear models are assumed to be _additive_ and _linear_. Additive meaning the association between a predictor and the response does not depend on the values of the othe predictors.
+
 A **_synergy effect_** (in marketing) or an **_interaction effect_** (in statistics) describes when two predictors offer more of a response than they do separately. Example: if Radio and TV have an impact on sales, but combined their impact is even greater.
 
 **The hierarchy principle**: if we include an interaction in a model, we should also include the _main effects_, even if the p-values associated with their coefficients are not significant.
@@ -387,8 +389,183 @@ $Y = \beta_0 + \beta_1X + \beta_2X^2 + ... \beta_nX^n + \epsilon_i$
 ### Ch 3.3.3 Potential Problems
 
 1) Non-linearity of the response-predictor relationships
+    - Residual plots can be used to map out residuals. If a pattern exists, it could be indicative the model is poor.
 2) Correlation of error terms
+    - Leads to an unwarranted sense of confidence in our model. Residuals can again be plotted, but in the example of time series if it can be seen that adjacent residuals are close in value, it can indiciate a positive correlation. This is considered **_tracking_**.
 3) Non-constant variance of error terms
+    - Non-constance in error terms can be identified with **_heteroscedasticity_** which is shown in a "funnel shape" in the residuals plot (i.e. the magnitude of the residuals increases with the fitted values).
 4) Outliers
+    - Residual plots can be used to identify outliers. Outliers can greatly affect RSE and $R^2$ values. Outliers come up with when the response is unusual given the predictor.
 5) High-leverage points
+    - Conversely, high-leverage occurs when there is an unusual predictor i.e. a predictor value is vastly different from the others. It is very important to identify these value because they can invalidate the entire fit of the model. Computing an observation's leverage is done with the equation defined by the **_leverage statistic_**, which varies for different models.
 6) Collinearity
+    - Occurrs when two or more predictors are closely related. This can create difficulty in determining the effect a predictor has. There can also exist **_multicollinearity_** when 3+ variables have high correlation even if they do not as pairs. A correlation matrix can help visually determine collineartiy, but not always, and you may want to employ the **_variance inflation factor_** (VIF).
+
+# Chapter 4 - Classification
+
+## Ch 4.1 - An Overview of Classification
+
+General notes on classification, terms like _categorization_ and introduction to the example of the credit card balance versus default dataset
+
+## Ch 4.2 - Why Not Linear Regression?
+
+For a given example where a set of predictors may have 3+ classifiers, linear regression assumes the difference between the classifiers is of the same magnitude. In reality, there is no reason to assume this. Linear regression is better suited for binary classification (0/1) and use of dummy variables.
+
+Two reasons not to perform classification using a regression method:
+
+1) A regression method cannot accommodate a qualitative response with more than two classes
+2) a regression method will not provide meaningful estimates of $Pr(Y|X)$, even with just 2 classes.
+
+Using the credit card default dataset, probabilities of defaulting can wind up being _negative_ using linear regression:
+
+![Ch4 Linear Regression Negative Probability](/images/statistical_learning/ch4-linear-reg-negative.png)
+
+## Ch 4.3 - Logistic Regression
+
+Rather than modeling repsonse $Y$ directly, logistic regression models the _probability_ that $Y$ belongs to a particular category.
+
+### Ch 4.3.1 - The Logistic Model
+
+Since probabilities must always fall between 0 and 1, and not negative or greater than 1 as shown above, the logistic function is used to ensure sensible outputs:
+
+$p(X) = \frac{e^{\beta_0 + \beta_1X}}{1+e^{\beta_0 + \beta_1X}}$
+
+Fitting the model is done using a method called _maximum likelihood_. The logistic function always produces an S-shaped curve as shown in the image above.
+
+Taking the formula above and manipulating it we can produces the _odds_, which can take on any value greater than or equal to 0:
+
+$\frac{p(X)}{1-p(X)} = e^{\beta_0 + \beta_1X}$
+
+Taking the _log_ of both sides removes $e$ and gives you the _log odds_ or _logit_.
+
+### Ch 4.3.2 - Estimating the Regression Coefficients
+
+This section covers _maximum likelihood_ which can be though of like least squares for model fitting in linear regression.
+
+Seek esimates for $\beta_0$ and $\beta_1$ such that the predicted probability $\hat{p}(x_i)$ is close to the true value of the result.
+
+Luckily maximum likelihood fitting can be done easily in R.
+
+### Ch 4.3.3 - Making Predictions
+
+Basically you make your model, you plug in your values, you get your prediction :sparkles:
+
+### Ch 4.3.4 - Multiple Logistic Regression
+
+Similar to the multiple linear regression model, the multiple logistic regression model can be written as:
+
+$p(X) = \frac{e^{\beta_0 + \beta_1X+...\beta_pX_p}}{1 + e^{\beta_0 + \beta_1X+...\beta_pX_p}}$
+
+Maximum likelihood is still used to estimate all of the coefficients.
+
+This chapter shows a good example of how multiple logisitc regression can determine opposite end results than single for the same dataset.
+
+### Ch 4.3.5 - Multinomial Logistic Regression
+
+When the repsonse variable is non-singular, we refer to $K > 1$. In the student default example $K=2$ (a student defaults or does not). But in the example of classifying medical condition in an emergency room (stroke, drug oversoe, seizure), $K=3$. Acommodating this is known as _multinomial logistic regression_.
+
+Selection of the baseline is unimportant, but interpretation of the coefficients is very important since it is tied to the choice of baselines.
+
+An alternative to this approach is to use _softmax_ coding, where rather than selecting a baseline class all $K$ classes are treated symmetrically.
+
+## Ch 4.4 - Generative Models for Classification
+
+In these approaches, the distribution of the predictors is modelled separately in each response class. Baye's theroem is then used to flip the estimates. When the distribution of the predictors within each class is assumed to be normal, the models becomes similar to logistic regression. This is used in the following cases:
+
+- Substantial separation between the two classes, which leads to model instability in logistic regression.
+- If the distribution of the predictors is approximately normal in each of the classes and the sample size is small, these methods will be more accurate.
+- These methods can be extended to cases with more than two response classes.
+
+This section describes the following 3 classifiers that use different estimates for approximating the Bayes classifier:
+
+- Linear discriminant Analysis
+- Quadratic Discriminant Analysis
+- Naive Bayes
+
+### Ch 4.4.1 - Linear Discriminant Analysis for $p$ = 1
+
+Assume we only have 1 predictor, $p = 1$, and we would like to obtain an estimate for $f_k(x)$. We will classify an observation to the class for which $p_k(x)$ is the greatest.
+
+$f_k(x)$ is assumed to be nomral/Gaussian. In this setting the normal density looks like:
+
+$f_k(x) = \frac{1}{\sqrt{2\pi}\sigma_k}exp(-\frac{1}{2\pi\sigma_k^2}(x-\mu_k)^2)$
+
+- $\mu_k$ = mean parameter for $k$th class
+- $\sigma_k^2$ = variance parameter for $k$th class, we assume here that variance is equal across all classes, $K$
+- $\pi_k$ = prior probability that an observation belongs to the $k$th class
+
+_LDA_ method approximates the Bayes classifier by plugging in estimates for $\mu_k$, $\sigma_k^2$, and $\pi_k$:
+
+![Ch 4 pi and mu estimates](/images/statistical_learning/ch4-pi-and-mu-estimates.png)
+
+The Bayes decision boudary in effect is show below:
+
+![Ch 4 Bayes Descision p = 1](/images/statistical_learning/ch4-bayes-decision-p1.png)
+
+### Ch 4.4.2 - Linear Discriminant Analysis for $p > 1$
+
+Now we use _LDA_ above with multiple predictors, $p$. We start by assuming that the predictors, $X_p$, are drawn from a _multivariate Gaussian / mulitvariate normal_ distribution. This distribution assumes each predictor follows a one-dimensional normal distribution, with some correlation between each pair of $X$.
+
+If plotting the density functions of two predictors, they will be considered **uncorrelated** if the distribution is a normal bell shape (left), but correlated if the variances are unequal (right):
+
+![Ch 4 LDA Correlation](/images/statistical_learning/ch4-lda-correlation.png)
+
+The Bayes decision boundary in effect is show below:
+
+![Ch 4 Bayes Descision p > 1](/images/statistical_learning/ch4-bayes-decision-p2.png)
+
+Each _pair of classes_ has its own decision boundary.
+
+![Ch4 Confusion Matrix](/images/statistical_learning/ch4-confusion-matrix.png)
+
+When making a confusion matrix, two key terms are of importance:
+
+- Sensitivity: The percentage of true positives (trues correctly captured as trues)
+- Specificity: The true negatives (falses correctly captured as falses)
+
+These types of errors for all possible thresholds is captured using the **_receiver operating characteristics_** curve (**ROC**). One axis shows sensitivity (true positive) rates, the other shows false positive rates via 1-specificity. The higher the _area under the curve_ (AUC) the better. An AUC of 0.5 indicates a model performs no better than chance.
+
+Terms defined below:
+
+![Ch4 Matrix terms](/images/statistical_learning/ch4-matrix-terms.png)
+
+### Ch 4.4.3 - Quadratic Discriminant Analysis
+
+Like LDA, assumes observations from each class are drawn from a Gaussian distribution and plugs estimates for the parameters into Bayes' theorem to perform prediction. Unlike LDA, assumes each class has its own covaraince matrix. QDA is much more flexible, and this can lead to higher variance and lower bias. LDA is better than QDA for fewer training observations where reducing variance is crucial. QDA is recommended if the training set is very large so variance is not a major concern.
+
+### Ch 4.4.4 - Naive Bayes
+
+Recall that Bayes' theorem provides an expression for the posterior probability. Naive Bayes' avoids some of the simple, strict assumptions of LDA and QDA by assuming :
+
+> Within the $k$th class, the $p$ predictors are independent.
+
+I.e. we assume there is no relationship between the predictors. Naive Bayes introduces some bias, but reduces variance, and works very well when $n$ is not large enough relative to $p$ for effective join distribution estimates within each class.
+
+## Ch 4.5 - A Comparison of Classification Methods
+
+### Ch 4.5.1 - An Analytical Comparison
+
+- LDA is a special case of QDA
+- LDA is a special case of naive Bayes _and_ naive Bayes is a special case of LDA
+- Neither QDA nor Naive Bayes are special cases of each other. Naive Bayes can produce more flexible fits, but QDA can be more accurate for predictors that have interactions which are important for discriminating between classes.
+
+Selecting the apporpriate method depends on the true distribution of the predictors in each class, $K$, and other conisderations like $n$ and $p$ (see bias-variance trade off).
+
+Comparison with KNN:
+
+- KNN, being non-parametric, is better than LDA and logistic regression for non linear decision boundaries (with large $n$ and small $p$)
+- KNN requires a lot of observations $n$ with relatively few predictors $p$
+- QDA may be preferred when $n$ is small or $p$ is somewhat large
+- KNN does not tell which predictors are important
+
+## Ch 4.6 - Generalized Linear Models
+
+For these models, we are interested in response, $Y$, that is neither quantitative nor qualitative. An example is _**counts**_ like counts of bike shares in a given time frame. These values are non-negative. This may be similar to census tracking.
+
+A linear model can perform well, but in the example of bikeshare data, may predict _negative_ users. This leads to validity questions of the coefficients arrived at and assumptions made.
+
+Instead, **Poisson Regression** can be a better approach, dictated by the _Poisson Distribution_, and can typically used to be model counts.
+
+The Poisson Regression model requires attention to interpretation. It is also better at handling the **_mean-variance relationship_** of data over linear regression since linear regression always uses a constant value for variance. In the bike share data, usage and variance are both much higher during unfavorable weather conditions. Poisson Regression will also never have negative values.
+
+Linear regression, logistic regression, and Poisson are all members of the _generalized linear model (GLM)_ family. Other examples include Gamma regression and negative binomial regression. 
