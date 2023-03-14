@@ -568,4 +568,72 @@ Instead, **Poisson Regression** can be a better approach, dictated by the _Poiss
 
 The Poisson Regression model requires attention to interpretation. It is also better at handling the **_mean-variance relationship_** of data over linear regression since linear regression always uses a constant value for variance. In the bike share data, usage and variance are both much higher during unfavorable weather conditions. Poisson Regression will also never have negative values.
 
-Linear regression, logistic regression, and Poisson are all members of the _generalized linear model (GLM)_ family. Other examples include Gamma regression and negative binomial regression. 
+Linear regression, logistic regression, and Poisson are all members of the _generalized linear model (GLM)_ family. Other examples include Gamma regression and negative binomial regression.
+
+# Chapter 5 - Resampling Methods
+
+This chapter will discuss two of the most common resampling methods:
+
+- **cross-validation**
+- **boostrapping**
+
+Other definitions:
+
+- **Model Assessment**: the process of evaluating a model's performance
+- **Model Selection**: the process of selecting the proper level of flexibility for a model
+
+## Ch 5.1 - Cross-Validation
+
+Reminder definitions:
+
+- **test error rate**: Average error that results from using a statistical learning method to predict the response on a new observation. Not easy to obtain unless a designated test set is available.
+- **training error rate**: Similar to above, but easier to calculate by applying the method to the observations used in its training. Can wind up differing from the test error rate and risk underestimation.
+
+### Ch 5.1.1 - The Validation Set Approach
+
+The validation set approach involves randomly dividing the available set of observations into two parts: a **training set** and a **validation set** / **hold-out set**. The model is fit on the training set and the fitted model is used to predict the responses for the observations in the validation set
+
+The resulting **validation set error rate** is an estimate of the test error rate.
+
+There are two drawbacks to the validation set approach:
+
+1) Test error rates in the validation estimate can be highly variable based on which observations are included in test versus validation sets.
+2) By proxy of using fewer/a subset of observations to fit the model, the model's validation set error rate runs a risk of overestimating the test error rate.
+
+### Ch 5.1.2 Leave-One-Out Cross-Validation (LOOCV)
+
+Instead of two subsets of comparable size, LOOCV only includes a single observation in the validation set and the remaining observations make up the training set. The statistical learning method is then fit on the $n-1$ training observations and a prediction is made on the excluded observation.
+
+This can be done $n$ times to produce $n$ MSEs. The LOOCV estimate for the test MSE is the average of these $n$ test error estimates.
+
+Advantages over the validation set approach:
+
+- Far less bias due to $n-1$ fits, versus valdation set approach where the training set is half the size of the original set.
+- Doesn't overestimate the eerror rate as much as validation set approach
+  - There is no randomness in the training/validation set splits
+
+Downside: computationally expensive to implement. Large $n$ makes for each individual model being slow to fit.
+
+### Ch 5.1.3 - $k$-Fold Cross-Validation
+
+This approach involves randomly dividing the set of observations into $k$ groups/folds of approximately equal size. The first fold is treated as the validation set and the method is fit on the remaining $k-1$ folds. The MSE is then computed on the observations of the held-out fold. this procedure is then repeated $k$ times with each time having a different group of observations treated as the validation set.
+
+The $k$ fold CV estimate is computed by averaging all of the $k$ estimates of the MSE.
+
+> LOOCV is a special case of $k$ fold with $k$ = $n$
+
+Not setting $k=n$ has a computational advantage, $k$ is usually set to 5 or 10. It can also be applied to almost any statistical learning method.
+
+### Ch 5.1.4 - Bias-Variance Trade-Off for $k$ Fold Cross-Validation
+
+Aside from computational advantages, $k$ fold CV can also give more accurate estimates of the test error rate than LOOCV thanks to bias-variance trade off.
+
+LOOCV does a great job of reducing bias, but can have much higher variance when $k$ < $n$. This is because all of the fitted models are trained on a nearly identical set of observations (the difference being the hold out observation). This means the outputs are highly positively correlated with each other.
+
+$k$ fold CV uses outputs less correlated with each other since there is less overlap between the traiing sets.
+
+Using $k = 5$ or $k = 10$ have been shown to empirically yield test error rate estimates that suffer neither from excessively high bias or variance.
+
+### Ch 5.1.5 - Cross-Validation on Classification Problems
+
+Instead of using the MSE to quantify test error, instead we use the number of misclassified observations.
