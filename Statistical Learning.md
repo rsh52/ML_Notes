@@ -637,3 +637,11 @@ Using $k = 5$ or $k = 10$ have been shown to empirically yield test error rate e
 ### Ch 5.1.5 - Cross-Validation on Classification Problems
 
 Instead of using the MSE to quantify test error, instead we use the number of misclassified observations.
+
+## Ch 5.2 - The Bootstrap
+
+The _bootstrap_ method is a tool for quantifying uncertainty associated with a given estimator or modelling method. Ex: estimate the standard errors of the coefficients from a linear regression fit.
+
+Rather than repeatedly obtaining data sets from the population, we instead obtain distinct data sets by repeatedly sampling observations from the original data set. Bootstrapping involves **repeated sampling with replacement**.
+
+> Why is it called this? It is based off a fable where a baron was thrown in a lake and "pulled himself up by his bootstraps" to get himself out of the lake and save his life. It is the idea that you work with what you've got, we use the data itself to get information about our estimator.
