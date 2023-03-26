@@ -645,3 +645,79 @@ The _bootstrap_ method is a tool for quantifying uncertainty associated with a g
 Rather than repeatedly obtaining data sets from the population, we instead obtain distinct data sets by repeatedly sampling observations from the original data set. Bootstrapping involves **repeated sampling with replacement**.
 
 > Why is it called this? It is based off a fable where a baron was thrown in a lake and "pulled himself up by his bootstraps" to get himself out of the lake and save his life. It is the idea that you work with what you've got, we use the data itself to get information about our estimator.
+
+# Chapter 6 - Linear Model Selection and Regularization
+
+Before moving to non-linear models, this chapter will first look at how the linear model can be improved by replacing least squares fitting with alternative fitting methods. These methods have potential to yield better _prediction accuracy_ and _model interpretability_. We will use **feature/variable selection** to improve model interpretability, i.e. exclude irrelevant variables from a model like multiple regression. In this chapter we will discuss three methods for fitting:
+
+1) **Subset Selection**: Identifying a subset of the $p$ predictors believed to be related to the response. Then, fit a model using least squares on the reduced set of variables.
+2) **Shrinkage**: Fit a model involving all $p$ predictors, but shrink the estimated coefficients close to zero relative to the least squares estimates. The shrinkage/**regularization** reduces variance.
+3) **Dimension Reduction**: Project the $p$ predictors into an $M$-dimensional subspace where $M < p$. This is acieved by computing $M$ different _linear combinations/projections_ of the variables. The projections are then used as predictors to fit a linear regresion model by least squares.
+
+While methods here are applied in this chapter to regression, they can also be applied to classification models.
+
+## Ch 6.1 - Subset Selection
+
+### Ch 6.1.1 - Best Subset Selection
+
+A separate least squares regression is fit for each possible combination of $p$ predictors. Once all resulting models are produces, the goal is to identify which is **best**. Selection of the "best" model is nontrivial
+
+Done using the algorithm below:
+
+1) $M_0$ is the "null model", containing no predictors and predicts the sample mean for each observation.
+2) For $k = 1,2,...p$
+   
+   a) Fit all models that contain exactly $k$ predictors
+   
+   b) Pick the best among them and call it $M_k$, having the smallest RSS/largest $R^2$
+3) Select a single best model from among $M_0....M_p$ using cross validated prediction error, $C_p$ (AIC), BIC, or adjusted $R^2$
+
+Limitations:
+
+- With greater predictors, $p$, the more models that need to be made ($2^p$), i.e. if $p$ is 10 then there are over 1000 models to be considered. With modern computers, its difficult for this method to be used for anything beyoned $p = 40$
+- Larger search spaces can lead to overfitting and high variance 
+
+### Ch 6.1.2 - Stepwise Selection
+
+Stepwise methods can address the limits of BSS above.
+
+#### Forward Stepwise Selection
+
+Selects a much smaller set of models, then adds predictors to the model one at a time, until all predictors are in the model. At each step, the variable that give the greatest additional improvement to the fit is added to the model:
+
+1) Let $M_0$ denote the null model, containing no predictors
+2) For $k=0,....p-1$:
+
+   a) Consider all $p-k$ models that augment the predictors in $M_k$ with one additional predictors
+
+   b) Choose the best among these $p-k$ models, $M_{k+1}$, determined by smallest RSS or highest $R^2$
+3) Select a single best model from among $M_0....M_p$ using cross validated prediction error, $C_p$ (AIC), BIC, or adjusted $R^2$
+
+Instead of over 1 million models when $p=20$, this method results in only 211 models. While forward stepwise selection does well in practice, it is not guaranteed to find the best possible model.
+
+> In the case with $p=3$ predictors, the best possible one variable model has $X_1$ and the best possible two variable model has $X_2$ and $X_3$. Forward selection will fail to select the best two variable model because $M_1$ and $M_2$ will always contain $X_1$.
+
+#### Backward Stepwise Selection
+
+Unlike forward, this method begins with the full leas squares model containing all $p$ predictors and the interatively removes the least useful predictor, one at a time:
+
+1) Let $M_0$ denote the null model, containing no predictors
+2) For $k=p,p-1,...,1$:
+
+   a) Consider all $k$ models that contain all but one of the predictors in $M_k$ for a total of $k-1$ predcitors
+
+   b) Choose the best among these $k$ models, $M_{k+1}$, determined by smallest RSS or highest $R^2$
+3) Select a single best model from among $M_0....M_p$ using cross validated prediction error, $C_p$ (AIC), BIC, or adjusted $R^2$
+
+Similar to forward stepwise selection, can be applied in settings where $p$ is too large for best subset selection. It requires that $n$ is larger than $p$, whereas forward can be used even if $n<p$.
+
+#### Hybrid Approaches
+
+Generally these 3 methods give similar, but not identical models. Hybrid versions combine forward and backward, mimic best selection and attempt to retain the computational advantages of forward and backward.
+
+### Ch 6.1.3 Choosing the Optimal Model
+
+RSS and $R^2$ are indicative of the training error, but can be poor representations of the test error, and so are not suitable for selecting the best model among these different methods. There are two common approaches:
+
+1) Indirectly estimate the test error via adjustment to the training error to account for bias due to overfitting. This is done with these adjustment methods: $C_p, adjusted  R^2, AIC, BIC$.
+2) Directly estimate the test error, using either a validation set or CV approach. This can be advantagious to those described above due to the direct estimate and fewer assumptions about the true underlying model. It can also be used in scenarios where it is hard to predict the degrees of freedom or estimate the error variance ($\sigma^2$). In the past this was computationally prohibitive, so method (1) was preferred. But now we can do this with modern tech!
