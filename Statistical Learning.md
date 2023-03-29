@@ -721,3 +721,30 @@ RSS and $R^2$ are indicative of the training error, but can be poor representati
 
 1) Indirectly estimate the test error via adjustment to the training error to account for bias due to overfitting. This is done with these adjustment methods: $C_p, adjusted  R^2, AIC, BIC$.
 2) Directly estimate the test error, using either a validation set or CV approach. This can be advantagious to those described above due to the direct estimate and fewer assumptions about the true underlying model. It can also be used in scenarios where it is hard to predict the degrees of freedom or estimate the error variance ($\sigma^2$). In the past this was computationally prohibitive, so method (1) was preferred. But now we can do this with modern tech!
+
+## Ch 6.2 - Shrinkage Methods
+
+Instead of using least squares to fit a linear model containing a subset of the predictors, we can instead fit a model containing all predictors using a technique that _constrains_ or _regularizes_ the coefficient estimates. I.e., _shrinks_ the coefficient estimates towards zero. This can greatly reduce variance. The two most well known techniques are:
+
+- Ridge regression
+- Lasso
+
+### Ch 6.2.1 - Ridge Regression
+
+Recall that in Ch3 how least suqares fitting estiamtes coefficient values that minimize RSS (residual sum of squaers i.e. training error):
+
+![Ch 3 RSS](/images/statistical_learning/ch6-rss.png)
+
+Ridge Regression is very similar, except the coefficients are estimated by minimizing s slightly different quanitity using $\lambda$, a "tuning parameter":
+
+![CH 6 Ridge Regression](/images/statistical_learning/ch6-ridge-regression.png)
+
+Here, the $\lambda$ term introduces a **shrinkage penalty**, and is small when the coefficients ($\beta$) are close to zero. $\lambda$ controls the relative impact of the penalty.
+
+Unlike least squares which produces one set of coefficient estimates, ridge regression produces a different set of estiamtes for each value of $\lambda$.
+
+Ridge regression has an advantage over leas squares thanks to the _bias-variance tradeoff_. Flexibility decreases as $\lambda$ increases, leading to decreased variance but increased bias.
+
+In the figure below, note how a "swet spot" can be found where bias and variance intersect to produce a minimized test mean squared error.
+
+![Ch 6 Ridge Regression Visualized](/images/statistical_learning/ch6-ridge-regression-visualized.png)
