@@ -748,3 +748,15 @@ Ridge regression has an advantage over leas squares thanks to the _bias-variance
 In the figure below, note how a "swet spot" can be found where bias and variance intersect to produce a minimized test mean squared error.
 
 ![Ch 6 Ridge Regression Visualized](/images/statistical_learning/ch6-ridge-regression-visualized.png)
+
+### Ch 6.2.2 - The Lasso
+
+Ridg Regression big disadvantage: includes all $p$ predictors in final model, and never sets any of them to exactly 0 (though it may get closeto 0) through the $\lambda$ penalty. Introducing the lasso:
+
+![ch 6 Lasso Eq](/images/statistical_learning/ch6-lasso-eq.png)
+
+This is very similar to ridge regression except that $\beta_j^2$ is replaced with $|\beta_j|$ for the "lasso penalty." The difference is that the lasso penalty can force coefficient estimates to equal exactly zero with sufficiently large $\lambda$. Similar to best subset selection, lasso performs variables selection.
+
+While lasso yields "sparse" models by being only a subset of variables, they tend to be more interpretable than ridge regression ones.
+
+![Ch6 Lasso Visualized](/images/statistical_learning/ch6-lasso-visualized.png)
