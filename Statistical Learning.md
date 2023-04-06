@@ -760,3 +760,21 @@ This is very similar to ridge regression except that $\beta_j^2$ is replaced wit
 While lasso yields "sparse" models by being only a subset of variables, they tend to be more interpretable than ridge regression ones.
 
 ![Ch6 Lasso Visualized](/images/statistical_learning/ch6-lasso-visualized.png)
+
+## Ch 6.3 - Dimension Reduction Methods
+
+Instead of using a subset of the original vars, or shrinking their coefficients towards zero, this method attempts to transform the predictors and then fit a least squares model using the transformed variables. "Dimension reduction" comes from reducing the number of variables or features while retaining the most important information.
+
+$Z_m = \sum_{j=1}^N\phi_{jm}X_j$
+
+Linear regression using the transformed predictors can “often” outperform linear regression using the original predictors.
+
+$M$ represents something less than $p$, our original predictors.
+
+### Ch 6.3.1 Principal Components Regression/Analysis (PCA)
+
+While used primarily in unsupervised learning, PCA is also used as a dimension reduction technique for regression. Visually:
+
+![Ch 6 PCA](/images/statistical_learning/ch6-pca.png)
+
+It is a technique for reducing the dimension of an $n x p$ matrix. The first principal component direction of the data is that along which the observations vary the **most**.
