@@ -771,10 +771,40 @@ Linear regression using the transformed predictors can “often” outperform li
 
 $M$ represents something less than $p$, our original predictors.
 
-### Ch 6.3.1 Principal Components Regression/Analysis (PCA)
+### Ch 6.3.1 Principal Components Regression/Analysis (PCA/PCR)
+
+**PCA** 
 
 While used primarily in unsupervised learning, PCA is also used as a dimension reduction technique for regression. Visually:
 
 ![Ch 6 PCA](/images/statistical_learning/ch6-pca.png)
 
-It is a technique for reducing the dimension of an $n x p$ matrix. The first principal component direction of the data is that along which the observations vary the **most**.
+It is a technique for reducing the dimension of an $n x p$ matrix. The first principal component direction of the data is that along which the observations vary the **most**. This is shown below on the left hand figure:
+
+![Ch 6 PCA Projection](/images/statistical_learning/ch6-pca-projection.png)
+
+In PCA, we choose $\phi$ values that capture as much variance as possible.
+
+The second principal component, the blue dashed line, is orthogonal to the first one and capture the second most variation, etc.
+
+PCA can also be interpreted as having the first principal component vector be the line that is as close as possible to the data, i.e. in the example it is the line minimizing the sum of squared perpendicular distances between each point and the line.
+
+The x's in the plot represent the projections of the scores onto the line, when the graph is rotated the distances of those values from the mean values of population and ad spending (the blue dot).
+
+The number of principal components is based on the number of predictors, so in the advertising/population example we only have these two predictors and can at most have two principal components.
+
+**PCR**
+
+In PCR, the key idea is that often a small number of principal components suffice to explain most of the variability in the data and the relationship with the response.
+
+PCR tends to do well in cases where the first few components are sufficient fo capture most of the variation and relationship with the response.
+
+PCR is **not** a feature selection method because each of the $M$ principal components used in the regression is a linear combination of all $p$ original features. PCR is more closely related to ridge regrssion than to lasso, it can even be thought of as a continuous version of ridge regression.
+
+### Ch 6.3.2 Partial Least Squares (PLS)
+
+Since PCR is an unsupervised method (i.e. the response is not used to help determine the principal component directions), a drawback to it is that there is no guarantee the directions that best explain the predictors will also best explain the response.
+
+PLS is a supervised method. First a new set of features ($Z_1,....Z_M$) are identified that are linear combinations of the original features. Then it fits a linear model via least squares using these new $M$ features. PLS attempts to find directions that explain both the repsonse _and_ the predictors.
+
+In practice, PLS is often not as good as ridge or PCR and can reduce bias but increase variance.
