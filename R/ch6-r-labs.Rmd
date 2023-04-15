@@ -1,0 +1,171 @@
+---
+title: "ch6-r-labs"
+author: "Richard Hanna"
+date: "2023-04-15"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Model Selection
+===============
+
+```{r}
+library(ISLR2)
+summary(Hitters)
+```
+First remove all missing values, then check to confirm:
+
+```{r}
+Hitters <- na.omit(Hitters)
+with(Hitters, sum(is.na(Salary)))
+```
+
+## Best Subset Regression
+-----
+
+```{r}
+library(leaps)
+regfit.full <- regsubsets(Salary ~., data = Hitters)
+summary(regfit.full)
+```
+
+This gives a graphic display showing the variable that's in the best subset of a corresponding size.
+
+By default this gives subsets up to size 8, but let's check all variables (19):
+
+```{r}
+regfit.full <- regsubsets(Salary~., Hitters, nvmax = 19)
+reg.summary <- summary(regfit.full)
+reg.summary
+names(reg.summary)
+```
+
+```{r}
+plot(reg.summary$cp, xlab = "Number of Variables", ylab = "Cp")
+which.min(reg.summary$cp) # which.min gives you the index of the minimum, min gives you the value
+points(10, reg.summary$cp[10], pch = 20, col ='red')
+```
+
+Let's look at the plot method for a `regsubsets` object:
+
+```{r}
+plot(regfit.full, scale = "Cp")
+coef(regfit.full, 10)
+```
+
+## Forward Stepwise Regression
+----
+
+```{r}
+regfit.fwd <- regsubsets(Salary~., Hitters, nvmax = 19, method = "forward")
+summary(regfit.fwd)
+plot(regfit.fwd, scale = "Cp")
+```
+
+
+Model Selection Using a Validation Set
+----
+
+```{r}
+dim(Hitters)
+set.seed(1)
+train <- sample(seq(263), 180, replace = FALSE)
+train
+regfit.fwd <- regsubsets(Salary~., Hitters[train,], nvmax = 19, method = "forward")
+```
+
+```{r}
+val.errors <- rep(NA,19)
+x.test <- model.matrix(Salary~., data = Hitters[-train,])
+
+for (i in 1:19) {
+  coefi <- coef(regfit.fwd, id = i)
+  pred <- x.test[,names(coefi)] %*% coefi #matrix multiplication
+  val.errors[i] <- mean((Hitters$Salary[-train]-pred)^2)
+}
+
+plot(sqrt(val.errors), ylab = "Root MSE", ylim = c(300, 400), pch = 19, type = "b")
+points(sqrt(regfit.fwd$rss[-1]/180), col = "blue", pch = 19, type = "b")
+legend("topright", legend = c("Training", "Validation"), col = c("blue", "black"), pch = 19)
+```
+
+Lets make a function for doing this
+
+```{r}
+predict.regsubsets <- function(object, newdata, id, ...){
+  form <- as.formula(object$call[[2]])
+  mat = model.matrix(form,newdata)
+  coefi <- coef(object, id = id)
+  mat[,names(coefi)] %*% coefi
+}
+```
+
+##Model Selection and Cross Validation
+----
+
+```{r}
+set.seed(11)
+folds <- sample(rep(1:10, length = nrow(Hitters)))
+folds
+table(folds)
+cv.errors <- matrix(NA,10,19)
+for(k in 1:10){
+  best.fit = regsubsets(Salary~., data = Hitters[folds!=k,], nvmax = 19, method = "forward")
+  for(i in 1:19){
+    pred = predict(best.fit, Hitters[folds==k,], id=i)
+    cv.errors[k,i]=mean((Hitters$Salary[folds==k]-pred)^2)
+  }
+}
+```
+
+```{r}
+rmse.cv <- sqrt(apply(cv.errors, 2, mean))
+plot(rmse.cv, pch = 19, type = "b")
+```
+
+
+# Ridge Regression and Lasso
+----
+```{r}
+library(glmnet)
+x <- model.matrix(Salary~.-1, data = Hitters)
+y <- Hitters$Salary
+```
+
+```{r}
+fit.ridge <- glmnet(x,y,alpha = 0) # When alpha is 0, ridge, when 1 lasso. In between 0 and 1 is an elastic model
+plot(fit.ridge,xvar = "lambda", label = TRUE)
+cv.ridge <- cv.glmnet(x,y,alpha = 0)
+plot(cv.ridge)
+```
+
+Now Lasso!
+
+```{r}
+fit.lasso <- glmnet(x,y)
+plot(fit.lasso, xvar = "lambda", label = TRUE)
+plot(fit.lasso, xvar = "dev", label = TRUE)
+cv.lasso <- cv.glmnet(x,y)
+plot(cv.lasso)
+coef(cv.lasso)
+```
+
+```{r}
+lasso.tr <- glmnet(x[train,], y[train])
+lasso.tr
+pred <- predict(lasso.tr,x[-train,])
+dim(pred)
+rmse <- sqrt(apply((y[-train]-pred)^2,2,mean))
+plot(log(lasso.tr$lambda), rmse, type = "b", xlab = "log(lambda)")
+lam.best <- lasso.tr$lambda[order(rmse)[1]]
+lam.best
+coef(lasso.tr, s = lam.best)
+```
+
+
+
+
+
